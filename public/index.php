@@ -6,7 +6,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // Manual class loading for deployment
-require_once __DIR__ . '/../app/Router.php';
+// require_once __DIR__ . '/../app/Router.php';
 require_once __DIR__ . '/../app/helpers/Response.php';
 require_once __DIR__ . '/../app/helpers/JwtHelper.php';
 require_once __DIR__ . '/../config/Database.php';
