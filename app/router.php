@@ -21,10 +21,12 @@ class Router
     {
         $path = parse_url($uri, PHP_URL_PATH);
         
-        // Strip the subdirectory if present (e.g., /ratebiz/public/ or /ratebiz/)
-        $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-        if ($scriptPath !== '/' && strpos($path, $scriptPath) === 0) {
-            $path = substr($path, strlen($scriptPath));
+        // Robust subdirectory stripping
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $base = str_replace(['/public/index.php', '/index.php'], '', $scriptName);
+        
+        if ($base !== '' && strpos($path, $base) === 0) {
+            $path = substr($path, strlen($base));
         }
 
         foreach ($this->routes[$method] ?? [] as $route => $handler) {
