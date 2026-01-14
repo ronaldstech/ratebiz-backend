@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Simple test endpoint
-if ($_SERVER['REQUEST_URI'] === '/api/test') {
+if (strpos($_SERVER['REQUEST_URI'], '/api/test') !== false) {
     echo json_encode(['message' => 'API is working!', 'timestamp' => time()]);
     exit;
 }
