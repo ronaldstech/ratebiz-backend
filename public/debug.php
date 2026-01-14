@@ -82,4 +82,12 @@ listDir(__DIR__ . '/../app');
 echo "\nListing 'app/controllers':\n";
 listDir(__DIR__ . '/../app/controllers');
 
+echo "\nContent of 'app/router.php':\n";
+if (file_exists(__DIR__ . '/../app/router.php')) {
+    echo file_get_contents(__DIR__ . '/../app/router.php');
+} else if (file_exists(__DIR__ . '/../app/Router.php')) {
+    echo file_get_contents(__DIR__ . '/../app/Router.php');
+} else {
+    echo "router.php not found\n";
+}
 ?>
