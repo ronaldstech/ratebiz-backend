@@ -25,6 +25,12 @@ spl_autoload_register(function ($class) {
         
         if (file_exists($path)) {
             require_once $path;
+        } else {
+            // Fallback to lowercase filename for Linux compatibility
+            $loweredPath = dirname($path) . '/' . strtolower(basename($path));
+            if (file_exists($loweredPath)) {
+                require_once $loweredPath;
+            }
         }
     }
 });
