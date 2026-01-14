@@ -20,6 +20,17 @@ if (strpos($_SERVER['REQUEST_URI'], '/api/test') !== false) {
     exit;
 }
 
+// Test controller loading
+if (strpos($_SERVER['REQUEST_URI'], '/api/controllers') !== false) {
+    try {
+        $controller = new App\Controllers\BusinessController();
+        echo json_encode(['message' => 'Controller loaded successfully']);
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Controller loading failed: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
 // Initialize router
 $router = new App\Router();
 
