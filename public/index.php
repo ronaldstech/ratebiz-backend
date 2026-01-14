@@ -26,23 +26,7 @@ if (strpos($_SERVER['REQUEST_URI'], '/api/test') !== false) {
     exit;
 }
 
-// Initialize router
-try {
-    $router = new App\Router();
-    echo "Router initialized successfully\n";
-} catch (Exception $e) {
-    echo "Router error: " . $e->getMessage() . "\n";
-    exit;
-}
-
-// Define routes
-$router->post('/api/auth/login', 'AuthController@login');
-$router->post('/api/auth/register', 'AuthController@register');
-
-$router->get('/api/businesses', 'BusinessController@index');
-$router->get('/api/businesses/{id}', 'BusinessController@show');
-$router->post('/api/businesses', 'BusinessController@store');
-
-// Dispatch request
-$router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+// Temporary: just return a message
+echo json_encode(['status' => 'Basic API working', 'uri' => $_SERVER['REQUEST_URI']]);
+exit;
 ?>
