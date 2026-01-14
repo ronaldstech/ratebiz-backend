@@ -26,9 +26,16 @@ spl_autoload_register(function ($class) {
         if (file_exists($path)) {
             require_once $path;
         } else {
-            $loweredPath = dirname($path) . '/' . strtolower(basename($path));
-            if (file_exists($loweredPath)) {
-                require_once $loweredPath;
+            $dir = dirname($path);
+            $target = strtolower(basename($path));
+            if (is_dir($dir)) {
+                $files = scandir($dir);
+                foreach ($files as $f) {
+                    if (strtolower($f) === $target) {
+                        require_once $dir . '/' . $f;
+                        return;
+                    }
+                }
             }
         }
     }
