@@ -5,6 +5,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+// Manual loading for deployment
+require_once __DIR__ . '/../app/controllers/AuthController.php';
+require_once __DIR__ . '/../app/controllers/BusinessController.php';
+require_once __DIR__ . '/../app/models/Business.php';
+require_once __DIR__ . '/../app/middleware/AuthMiddleware.php';
+
 // Handle CORS
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
