@@ -29,4 +29,14 @@ try {
 } catch (Exception $e) {
     echo "Database error: " . $e->getMessage() . "\n";
 }
+
+try {
+    if (class_exists('App\Router')) {
+        echo "App\Router class found!\n";
+    } else {
+        echo "App\Router class NOT found.\n";
+    }
+} catch (Exception $e) {
+    echo "Router loading error: " . $e->getMessage() . "\n";
+}
 ?>

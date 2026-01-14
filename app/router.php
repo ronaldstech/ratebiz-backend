@@ -20,6 +20,12 @@ class Router
     public function dispatch(string $method, string $uri)
     {
         $path = parse_url($uri, PHP_URL_PATH);
+        
+        // Strip the subdirectory if present (e.g., /ratebiz/public/ or /ratebiz/)
+        $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+        if ($scriptPath !== '/' && strpos($path, $scriptPath) === 0) {
+            $path = substr($path, strlen($scriptPath));
+        }
 
         foreach ($this->routes[$method] ?? [] as $route => $handler) {
             $pattern = preg_replace('#\{[a-z]+\}#', '([^/]+)', $route);
