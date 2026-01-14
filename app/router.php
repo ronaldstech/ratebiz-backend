@@ -7,22 +7,32 @@ class Router
 {
     private array $routes = [];
 
-    public function post(string $path, string $handler)
+    public function get(string $path, string $handler)
     {
-        $this->routes['POST'][$path] = $handler;
+        $this->routes['GET'][$path] = $handler;
     }
 
     public function dispatch(string $method, string $uri)
     {
         $path = parse_url($uri, PHP_URL_PATH);
 
-        if (!isset($this->routes[$method][$path])) {
-            Response::json(['error' => 'Route not found'], 404);
+        foreach ($this->routes[$method] ?? [] as $route => $handler) {
+            $pattern = preg_replace('#\{[a-z]+\}#', '([^/]+)', $route);
+
+            if (preg_match("#^$pattern$#", $path, $matches)) {
+                array_shift($matches);
+
+                [$controller, $action] = explode('@', $handler);
+                $controller = "App\\Controllers\\$controller";
+
+                (new $controller)->$action(...$matches);
+                return;
+            }
         }
 
-        [$controller, $action] = explode('@', $this->routes[$method][$path]);
-        $controller = "App\\Controllers\\$controller";
-
-        (new $controller)->$action();
+        Response::json(['error' => 'Route not found'], 404);
     }
+
+
+    
 }
