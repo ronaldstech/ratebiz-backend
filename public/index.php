@@ -21,7 +21,13 @@ if ($_SERVER['REQUEST_URI'] === '/api/test') {
 }
 
 // Initialize router
-$router = new App\Router();
+try {
+    $router = new App\Router();
+    echo "Router initialized successfully\n";
+} catch (Exception $e) {
+    echo "Router error: " . $e->getMessage() . "\n";
+    exit;
+}
 
 // Define routes
 $router->post('/api/auth/login', 'AuthController@login');
