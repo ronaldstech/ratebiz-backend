@@ -12,6 +12,11 @@ class Router
         $this->routes['GET'][$path] = $handler;
     }
 
+    public function post(string $path, string $handler)
+    {
+        $this->routes['POST'][$path] = $handler;
+    }
+
     public function dispatch(string $method, string $uri)
     {
         $path = parse_url($uri, PHP_URL_PATH);
@@ -32,7 +37,4 @@ class Router
 
         Response::json(['error' => 'Route not found'], 404);
     }
-
-
-    
 }
