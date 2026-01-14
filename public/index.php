@@ -22,6 +22,13 @@ if ($_SERVER['REQUEST_URI'] === '/api/test') {
 
 // Initialize router
 try {
+    // Test if class exists
+    if (!class_exists('App\Router')) {
+        echo "App\\Router class not found\n";
+        echo "Available classes: " . implode(', ', get_declared_classes()) . "\n";
+        exit;
+    }
+
     $router = new App\Router();
     echo "Router initialized successfully\n";
 } catch (Exception $e) {
