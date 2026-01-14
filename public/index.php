@@ -5,6 +5,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
+// Manual class loading for deployment
+require_once __DIR__ . '/../app/Router.php';
+require_once __DIR__ . '/../app/helpers/Response.php';
+require_once __DIR__ . '/../app/helpers/JwtHelper.php';
+require_once __DIR__ . '/../config/Database.php';
+
 // Handle CORS
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
