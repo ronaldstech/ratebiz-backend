@@ -39,4 +39,22 @@ try {
 } catch (Exception $e) {
     echo "Router loading error: " . $e->getMessage() . "\n";
 }
+
+echo "Listing 'app' directory:\n";
+function listDir($dir) {
+    if (!is_dir($dir)) {
+        echo "$dir is not a directory\n";
+        return;
+    }
+    $files = scandir($dir);
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..') continue;
+        $path = $dir . '/' . $file;
+        echo is_dir($path) ? "[DIR] $file\n" : "[FILE] $file\n";
+    }
+}
+listDir(__DIR__ . '/../app');
+echo "\nListing 'app/controllers':\n";
+listDir(__DIR__ . '/../app/controllers');
+
 ?>

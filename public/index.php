@@ -7,11 +7,24 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-// Manual loading for deployment
-require_once __DIR__ . '/../app/controllers/AuthController.php';
-require_once __DIR__ . '/../app/controllers/BusinessController.php';
-require_once __DIR__ . '/../app/models/Business.php';
-require_once __DIR__ . '/../app/middleware/AuthMiddleware.php';
+// Custom autoloader fallback for App namespace if composer mapping is missing
+spl_autoload_register(function ($class) {
+    if (strpos($class, 'App\\') === 0) {
+        $parts = explode('\\', $class);
+        array_shift($parts); // Remove App
+        
+        // Handle App\Config separately if it maps to config/
+        if ($parts[0] === 'Config') {
+            $path = __DIR__ . '/../config/' . $parts[1] . '.php';
+        } else {
+            $path = __DIR__ . '/../app/' . implode('/', $parts) . '.php';
+        }
+        
+        if (file_exists($path)) {
+            require_once $path;
+        }
+    }
+});
 
 // Handle CORS
 header('Access-Control-Allow-Origin: *');
