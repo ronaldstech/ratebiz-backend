@@ -1,6 +1,9 @@
 <?php
 // Simple debug script
 echo "PHP Version: " . phpversion() . "\n";
+echo "SCRIPT_NAME: " . $_SERVER['SCRIPT_NAME'] . "\n";
+echo "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
+echo "DOCUMENT_ROOT: " . $_SERVER['DOCUMENT_ROOT'] . "\n";
 
 try {
     require_once __DIR__ . '/../vendor/autoload.php';
