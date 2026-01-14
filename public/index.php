@@ -17,7 +17,10 @@ spl_autoload_register(function ($class) {
         if ($parts[0] === 'Config') {
             $path = __DIR__ . '/../config/' . $parts[1] . '.php';
         } else {
-            $path = __DIR__ . '/../app/' . implode('/', $parts) . '.php';
+            // Lowercase directory parts for Linux compatibility
+            $filename = array_pop($parts);
+            $dirs = array_map('strtolower', $parts);
+            $path = __DIR__ . '/../app/' . (empty($dirs) ? '' : implode('/', $dirs) . '/') . $filename . '.php';
         }
         
         if (file_exists($path)) {

@@ -9,6 +9,23 @@ try {
     echo "Autoload error: " . $e->getMessage() . "\n";
 }
 
+spl_autoload_register(function ($class) {
+    if (strpos($class, 'App\\') === 0) {
+        $parts = explode('\\', $class);
+        array_shift($parts);
+        if ($parts[0] === 'Config') {
+            $path = __DIR__ . '/../config/' . $parts[1] . '.php';
+        } else {
+            $filename = array_pop($parts);
+            $dirs = array_map('strtolower', $parts);
+            $path = __DIR__ . '/../app/' . (empty($dirs) ? '' : implode('/', $dirs) . '/') . $filename . '.php';
+        }
+        if (file_exists($path)) {
+            require_once $path;
+        }
+    }
+});
+
 try {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
     $dotenv->load();
