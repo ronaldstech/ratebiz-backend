@@ -9,7 +9,7 @@ $dotenv->load();
 // require_once __DIR__ . '/../app/Router.php';
 // require_once __DIR__ . '/../app/helpers/Response.php';
 // require_once __DIR__ . '/../app/helpers/JwtHelper.php';
-require_once __DIR__ . '/../config/Database.php';
+// require_once __DIR__ . '/../config/Database.php';
 
 // Handle CORS
 header('Access-Control-Allow-Origin: *');
