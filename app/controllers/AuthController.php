@@ -5,6 +5,7 @@ use App\Config\Database;
 use App\Helpers\Response;
 use App\Helpers\JwtHelper;
 use Ramsey\Uuid\Uuid;
+use App\Models\Business;
 
 class AuthController
 {
@@ -13,38 +14,79 @@ class AuthController
         try {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (empty($data['email']) || empty($data['password'])) {
-                Response::json(['error' => 'Email and password required'], 422);
+            if (empty($data['email']) || empty($data['password']) || empty($data['name'])) {
+                Response::json(['error' => 'Name, Email and Password are required'], 422);
+                return;
             }
 
             $db = Database::connect();
 
+            // Check if email exists
             $stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$data['email']]);
 
             if ($stmt->fetch()) {
                 Response::json(['error' => 'Email already registered'], 409);
+                return;
             }
 
-            $id = Uuid::uuid4()->toString();
+            $db->beginTransaction();
 
-            $stmt = $db->prepare("
-                INSERT INTO users (id, email, password_hash)
-                VALUES (?, ?, ?)
-            ");
+            try {
+                $userId = Uuid::uuid4()->toString();
+                $role = $data['role'] ?? 'user';
 
-            $stmt->execute([
-                $id,
-                $data['email'],
-                password_hash($data['password'], PASSWORD_BCRYPT)
-            ]);
+                // Insert into users
+                $stmt = $db->prepare("
+                    INSERT INTO users (id, email, password_hash, name, role, phone)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ");
 
-            $token = JwtHelper::generate(['user_id' => $id, 'role' => 'user']);
+                $stmt->execute([
+                    $userId,
+                    $data['email'],
+                    password_hash($data['password'], PASSWORD_BCRYPT),
+                    $data['name'],
+                    $role,
+                    $data['phone'] ?? null
+                ]);
 
-            Response::json([
-                'message' => 'Registration successful',
-                'token' => $token
-            ], 201);
+                // If business, create business record
+                if ($role === 'business') {
+                    if (empty($data['businessName'])) {
+                        throw new \Exception('Business Name is required for business accounts');
+                    }
+
+                    Business::create([
+                        'id' => Uuid::uuid4()->toString(),
+                        'owner_id' => $userId,
+                        'name' => $data['businessName'],
+                        'category' => $data['category'] ?? null,
+                        'description' => $data['description'] ?? null,
+                        'location' => $data['location'] ?? null
+                    ]);
+                }
+
+                $db->commit();
+
+                $token = JwtHelper::generate(['user_id' => $userId, 'role' => $role]);
+
+                Response::json([
+                    'message' => 'Registration successful',
+                    'token' => $token,
+                    'user' => [
+                        'id' => $userId,
+                        'name' => $data['name'],
+                        'email' => $data['email'],
+                        'role' => $role
+                    ]
+                ], 201);
+
+            } catch (\Exception $e) {
+                $db->rollBack();
+                throw $e;
+            }
+
         } catch (\Exception $e) {
             Response::json(['error' => 'Registration failed: ' . $e->getMessage()], 500);
         }
