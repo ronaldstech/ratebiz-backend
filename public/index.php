@@ -73,6 +73,7 @@ $router = new App\Router();
 // Define routes
 $router->post('/api/auth/login', 'AuthController@login');
 $router->post('/api/auth/register', 'AuthController@register');
+$router->post('/api/upload', 'UploadController@upload');
 
 $router->get('/api/businesses', 'BusinessController@index');
 $router->get('/api/businesses/{id}', 'BusinessController@show');

@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS businesses (
     category VARCHAR(100),
     description TEXT,
     location VARCHAR(255),
-    phone VARCHAR(50), 
+    phone VARCHAR(50),
+    image_url VARCHAR(255),
     is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE

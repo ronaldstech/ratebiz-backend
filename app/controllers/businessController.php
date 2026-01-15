@@ -66,7 +66,8 @@ class BusinessController
                     'category' => $data['category'] ?? null,
                     'description' => $data['description'] ?? null,
                     'location' => $data['location'] ?? null,
-                    'phone' => $data['phone'] ?? null
+                    'phone' => $data['phone'] ?? null,
+                    'image_url' => $data['imageUrl'] ?? null
                 ]);
 
                 // Upgrade User Role to 'business' if they are currently 'user'

@@ -12,8 +12,8 @@ class Business
 
         $stmt = $db->prepare("
             INSERT INTO businesses 
-            (id, owner_id, name, category, description, location)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (id, owner_id, name, category, description, location, phone, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $stmt->execute([
@@ -22,7 +22,9 @@ class Business
             $data['name'],
             $data['category'],
             $data['description'],
-            $data['location']
+            $data['location'],
+            $data['phone'] ?? null,
+            $data['image_url'] ?? null
         ]);
     }
 
