@@ -45,8 +45,12 @@ class BusinessController
             }
 
             $data = json_decode(file_get_contents('php://input'), true);
+            $data = json_decode(file_get_contents('php://input'), true);
             
-            if (empty($data['name'])) {
+            // Map frontend 'businessName' to 'name' if necessary
+            $name = $data['name'] ?? $data['businessName'] ?? null;
+
+            if (empty($name)) {
                  Response::json(['error' => 'Business Name is required'], 422);
             }
 
@@ -58,10 +62,11 @@ class BusinessController
                 Business::create([
                     'id' => Uuid::uuid4()->toString(),
                     'owner_id' => $user->user_id,
-                    'name' => $data['name'],
+                    'name' => $name,
                     'category' => $data['category'] ?? null,
                     'description' => $data['description'] ?? null,
-                    'location' => $data['location'] ?? null
+                    'location' => $data['location'] ?? null,
+                    'phone' => $data['phone'] ?? null
                 ]);
 
                 // Upgrade User Role to 'business' if they are currently 'user'
