@@ -80,6 +80,9 @@ $router->get('/api/my-businesses', 'BusinessController@myBusinesses');
 $router->get('/api/businesses/{id}', 'BusinessController@show');
 $router->post('/api/businesses', 'BusinessController@store');
 
+$router->get('/api/businesses/{id}/reviews', 'ReviewController@index');
+$router->post('/api/reviews', 'ReviewController@store');
+
 // Dispatch request
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 ?>
