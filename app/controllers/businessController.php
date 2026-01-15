@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Helpers\Response;
 use App\Models\Business;
 use App\Middleware\AuthMiddleware;
+use App\Config\Database;
 use Ramsey\Uuid\Uuid;
 
 class BusinessController
@@ -37,22 +38,47 @@ class BusinessController
         try {
             $user = AuthMiddleware::handle();
 
-            if ($user->role !== 'owner' && $user->role !== 'admin') {
+            // Allow 'user', 'business' (owner), or 'admin' to create businesses
+            // But we specifically want to allow 'user' to upgrade
+            if (!in_array($user->role, ['user', 'business', 'admin'])) {
                 Response::json(['error' => 'Forbidden'], 403);
             }
 
             $data = json_decode(file_get_contents('php://input'), true);
+            
+            if (empty($data['name'])) {
+                 Response::json(['error' => 'Business Name is required'], 422);
+            }
 
-            Business::create([
-                'id' => Uuid::uuid4()->toString(),
-                'owner_id' => $user->user_id,
-                'name' => $data['name'],
-                'category' => $data['category'] ?? null,
-                'description' => $data['description'] ?? null,
-                'location' => $data['location'] ?? null
-            ]);
+            $db = Database::connect();
+            $db->beginTransaction();
 
-            Response::json(['message' => 'Business created'], 201);
+            try {
+                // Create Business
+                Business::create([
+                    'id' => Uuid::uuid4()->toString(),
+                    'owner_id' => $user->user_id,
+                    'name' => $data['name'],
+                    'category' => $data['category'] ?? null,
+                    'description' => $data['description'] ?? null,
+                    'location' => $data['location'] ?? null
+                ]);
+
+                // Upgrade User Role to 'business' if they are currently 'user'
+                if ($user->role === 'user') {
+                     $stmt = $db->prepare("UPDATE users SET role = 'business' WHERE id = ?");
+                     $stmt->execute([$user->user_id]);
+                }
+
+                $db->commit();
+                
+                Response::json(['message' => 'Business created successfully. You are now a Business account.'], 201);
+
+            } catch (\Exception $e) {
+                $db->rollBack();
+                throw $e;
+            }
+
         } catch (\Exception $e) {
             Response::json(['error' => 'Error creating business: ' . $e->getMessage()], 500);
         }
