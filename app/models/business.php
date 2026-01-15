@@ -34,6 +34,24 @@ class Business
         return $db->query("SELECT * FROM businesses WHERE is_verified = 1")->fetchAll();
     }
 
+    public static function allWithStats(): array
+    {
+        $db = Database::connect();
+        
+        $sql = "
+            SELECT 
+                b.*, 
+                COALESCE(AVG(r.rating), 0) as avg_rating, 
+                COUNT(r.id) as review_count
+            FROM businesses b
+            LEFT JOIN reviews r ON b.id = r.business_id
+            GROUP BY b.id
+            ORDER BY b.created_at DESC
+        ";
+        
+        return $db->query($sql)->fetchAll();
+    }
+
     public static function find(string $id): ?array
     {
         $db = Database::connect();

@@ -12,7 +12,24 @@ class BusinessController
     public function index(): void
     {
         try {
-            Response::json(Business::all());
+            $businesses = Business::allWithStats();
+
+            // Format response to match frontend expectations
+            $formatted = array_map(function($biz) {
+                return [
+                    'id' => $biz['id'],
+                    'businessName' => $biz['name'],
+                    'category' => $biz['category'],
+                    'location' => $biz['location'],
+                    'description' => $biz['description'],
+                    'imageUrl' => $biz['image_url'] ?? null,
+                    'phone' => $biz['phone'] ?? null,
+                    'rating' => number_format((float)$biz['avg_rating'], 1),
+                    'reviewCount' => $biz['review_count']
+                ];
+            }, $businesses);
+
+            Response::json($formatted);
         } catch (\Exception $e) {
             Response::json(['error' => 'Database connection failed: ' . $e->getMessage()], 500);
         }

@@ -17,3 +17,15 @@ CREATE TABLE IF NOT EXISTS businesses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Create reviews table
+CREATE TABLE IF NOT EXISTS reviews (
+    id VARCHAR(36) PRIMARY KEY,
+    business_id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NOT NULL,
+    rating DECIMAL(2, 1) NOT NULL, -- 1.0 to 5.0
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
