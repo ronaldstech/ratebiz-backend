@@ -89,4 +89,28 @@ class BusinessController
             Response::json(['error' => 'Error creating business: ' . $e->getMessage()], 500);
         }
     }
+    public function myBusinesses(): void
+    {
+        try {
+            $user = AuthMiddleware::handle();
+            $businesses = Business::getByOwnerId($user->user_id);
+
+            // Format response to match frontend expectations
+            $formatted = array_map(function($biz) {
+                return [
+                    'id' => $biz['id'],
+                    'businessName' => $biz['name'], // Map name to businessName
+                    'category' => $biz['category'],
+                    'location' => $biz['location'],
+                    'description' => $biz['description'],
+                    'imageUrl' => $biz['image_url'] ?? null,
+                    'phone' => $biz['phone'] ?? null
+                ];
+            }, $businesses);
+
+            Response::json($formatted);
+        } catch (\Exception $e) {
+            Response::json(['error' => 'Error fetching businesses: ' . $e->getMessage()], 500);
+        }
+    }
 }

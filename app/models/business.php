@@ -41,4 +41,12 @@ class Business
         $stmt->execute([$id]);
         return $stmt->fetch() ?: null;
     }
+
+    public static function getByOwnerId(string $ownerId): array
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("SELECT * FROM businesses WHERE owner_id = ?");
+        $stmt->execute([$ownerId]);
+        return $stmt->fetchAll();
+    }
 }

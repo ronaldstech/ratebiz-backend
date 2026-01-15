@@ -76,6 +76,7 @@ $router->post('/api/auth/register', 'AuthController@register');
 $router->post('/api/upload', 'UploadController@upload');
 
 $router->get('/api/businesses', 'BusinessController@index');
+$router->get('/api/my-businesses', 'BusinessController@myBusinesses');
 $router->get('/api/businesses/{id}', 'BusinessController@show');
 $router->post('/api/businesses', 'BusinessController@store');
 
