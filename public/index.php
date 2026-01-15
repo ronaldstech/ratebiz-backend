@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', '0');
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load environment variables
@@ -50,6 +50,22 @@ set_exception_handler(function ($e) {
         'message' => $e->getMessage(),
         'file' => basename($e->getFile()),
         'line' => $e->getLine()
+    ]);
+    exit;
+});
+
+// Custom Error Handler for Warnings/Notices
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    if (!(error_reporting() & $errno)) return false;
+    
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'PHP Error',
+        'type' => $errno,
+        'message' => $errstr,
+        'file' => basename($errfile),
+        'line' => $errline
     ]);
     exit;
 });

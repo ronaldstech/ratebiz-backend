@@ -30,7 +30,7 @@ class Review
         $stmt = $db->prepare("
             SELECT r.*, u.name as user_name 
             FROM reviews r
-            JOIN users u ON r.user_id = u.id
+            LEFT JOIN users u ON r.user_id = u.id
             WHERE r.business_id = ?
             ORDER BY r.created_at DESC
         ");
