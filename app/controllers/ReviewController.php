@@ -46,7 +46,7 @@ class ReviewController
                 'id' => $id
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Failed to submit review: ' . $e->getMessage()], 500);
         }
     }
@@ -76,7 +76,7 @@ class ReviewController
 
             Response::json(['message' => 'Review updated successfully']);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Failed to update review: ' . $e->getMessage()], 500);
         }
     }
@@ -100,7 +100,7 @@ class ReviewController
             Review::delete($id);
             Response::json(['message' => 'Review deleted successfully']);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Failed to delete review: ' . $e->getMessage()], 500);
         }
     }
@@ -130,7 +130,7 @@ class ReviewController
             }, $reviews);
 
             Response::json($formatted);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Failed to fetch reviews: ' . $e->getMessage()], 500);
         }
     }

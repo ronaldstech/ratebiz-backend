@@ -60,7 +60,7 @@ class AuthController
                 ]
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Registration failed: ' . $e->getMessage()], 500);
         }
     }
@@ -95,7 +95,7 @@ class AuthController
                 'message' => 'Login successful',
                 'token' => $token
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Login failed: ' . $e->getMessage()], 500);
         }
     }

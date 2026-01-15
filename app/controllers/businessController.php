@@ -30,7 +30,7 @@ class BusinessController
             }, $businesses);
 
             Response::json($formatted);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Database connection failed: ' . $e->getMessage()], 500);
         }
     }
@@ -58,7 +58,7 @@ class BusinessController
             ];
 
             Response::json($formatted);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
     }
@@ -74,7 +74,6 @@ class BusinessController
                 Response::json(['error' => 'Forbidden'], 403);
             }
 
-            $data = json_decode(file_get_contents('php://input'), true);
             $data = json_decode(file_get_contents('php://input'), true);
             
             // Map frontend 'businessName' to 'name' if necessary
@@ -110,12 +109,12 @@ class BusinessController
                 
                 Response::json(['message' => 'Business created successfully. You are now a Business account.'], 201);
 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $db->rollBack();
                 throw $e;
             }
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Error creating business: ' . $e->getMessage()], 500);
         }
     }
@@ -139,7 +138,7 @@ class BusinessController
             }, $businesses);
 
             Response::json($formatted);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Response::json(['error' => 'Error fetching businesses: ' . $e->getMessage()], 500);
         }
     }

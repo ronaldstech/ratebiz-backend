@@ -41,6 +41,19 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Global Exception Handler to ensure JSON response on fatal errors
+set_exception_handler(function ($e) {
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Uncaught Error',
+        'message' => $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
+    exit;
+});
+
 // Handle CORS
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
