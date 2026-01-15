@@ -37,4 +37,34 @@ class Review
         $stmt->execute([$businessId]);
         return $stmt->fetchAll();
     }
+
+    public static function find(string $id): ?array
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("SELECT * FROM reviews WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public static function update(string $id, array $data): void
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("
+            UPDATE reviews 
+            SET rating = ?, comment = ? 
+            WHERE id = ?
+        ");
+        $stmt->execute([
+            $data['rating'],
+            $data['comment'],
+            $id
+        ]);
+    }
+
+    public static function delete(string $id): void
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("DELETE FROM reviews WHERE id = ?");
+        $stmt->execute([$id]);
+    }
 }

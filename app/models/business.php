@@ -60,6 +60,23 @@ class Business
         return $stmt->fetch() ?: null;
     }
 
+    public static function findWithStats(string $id): ?array
+    {
+        $db = Database::connect();
+        $stmt = $db->prepare("
+            SELECT 
+                b.*, 
+                COALESCE(AVG(r.rating), 0) as avg_rating, 
+                COUNT(r.id) as review_count
+            FROM businesses b
+            LEFT JOIN reviews r ON b.id = r.business_id
+            WHERE b.id = ?
+            GROUP BY b.id
+        ");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
     public static function getByOwnerId(string $ownerId): array
     {
         $db = Database::connect();

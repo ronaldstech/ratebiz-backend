@@ -38,13 +38,26 @@ class BusinessController
     public function show(string $id): void
     {
         try {
-            $business = Business::find($id);
+            $business = Business::findWithStats($id);
 
             if (!$business) {
                 Response::json(['error' => 'Business not found'], 404);
             }
 
-            Response::json($business);
+            // Format for frontend
+            $formatted = [
+                'id' => $business['id'],
+                'businessName' => $business['name'],
+                'category' => $business['category'],
+                'location' => $business['location'],
+                'description' => $business['description'],
+                'imageUrl' => $business['image_url'] ?? null,
+                'phone' => $business['phone'] ?? null,
+                'rating' => number_format((float)$business['avg_rating'], 1),
+                'reviewCount' => $business['review_count']
+            ];
+
+            Response::json($formatted);
         } catch (\Exception $e) {
             Response::json(['error' => 'Database error: ' . $e->getMessage()], 500);
         }

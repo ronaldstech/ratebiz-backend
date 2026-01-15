@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS businesses (
 CREATE TABLE IF NOT EXISTS reviews (
     id VARCHAR(36) PRIMARY KEY,
     business_id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NULL, -- Allow NULL for guest reviews
     rating DECIMAL(2, 1) NOT NULL, -- 1.0 to 5.0
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
